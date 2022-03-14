@@ -3,25 +3,16 @@ import pyautogui
 import win32api, win32con, win32gui
 import time
 import random
-import keyboard
-import datetime
-import os
 import cv2
 import numpy
-import colorsys
-import torch
-import torchvision
 import baihe_map
 import laoao_map
 import els_config
-import pynput
 from threading import Thread, Timer
 import threading
 from PIL import Image, ImageGrab
 from colorsys import rgb_to_hsv
 from skimage.measure import compare_ssim
-from pynput import keyboard
-
 
 class obj:
     lock = threading.Lock()  # 线程锁

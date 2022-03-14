@@ -1,0 +1,8 @@
+pypiwin32
+torch
+torchvision
+numpy
+keyboard
+Pillow
+PyAutoGUI
+scikit-image==0.15.0
