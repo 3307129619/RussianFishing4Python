@@ -109,6 +109,8 @@ class obj:
             return False
         self.print('正在重置摩擦{}'.format(self.mocha_arr[i]))
         if self.mocha_arr[i] > 0:
+            if self.mocha_arr[i] == 9 and random.randint(1, 10) > 5:
+                self.mocha_arr[i] = 8 # 有概率缩小一下摩擦
             # 需要减下来
             pyautogui.keyDown('alt')
             for v in range(self.mocha_arr[i]):
@@ -656,11 +658,11 @@ class obj:
                         break
                     pyautogui.keyDown(els_config.keyboard_left)
                     # 判斷是否已經準備好
+                    paogan = 1
                     res = self.img_analysis_paogan(self.jietuimg)
                     if res is True:
                         break
                     # pyautogui.press(els_config.keyboard_left)
-                    paogan = 1
                 time.sleep(1)
                 if paogan == 1:
                     # 加入窝子再放杆
@@ -677,6 +679,7 @@ class obj:
                             self.print('杆子未准备好')
                             pyautogui.press('esc')
                     # 需要放杆
+                    self.jianpanup()
                     pyautogui.keyDown(els_config.keyboard_left)
                     time.sleep(1)
                     pyautogui.keyDown(els_config.keyboard_shift)
@@ -749,7 +752,7 @@ class obj:
                 self.print('收鱼动作完成')
                 self.obj_arr['ganzi'] = 0
                 self.obj_arr['shangyu_num'] += 1
-                self.zhongyu_lock = 0
+                # self.zhongyu_lock = 0
                 self.yugan_lock = 0
                 time.sleep(4)
 
