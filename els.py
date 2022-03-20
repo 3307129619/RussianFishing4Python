@@ -425,22 +425,21 @@ class obj:
             if res is True:
                 # 执行喝水
                 self.print('正在执行喝水操作')
-                pyautogui.press('7')
+                pyautogui.press(els_config.heshui_key)
                 pass
             # time.sleep(random.randint(10, 100))
             res = self.img_analysis_chifan(self.jietuimg)
             if res is True:
                 # 执行吃饭
                 self.print('正在执行吃饭操作')
-                pyautogui.press('6')
+                pyautogui.press(els_config.chifan_key)
                 pass
             pass
             res = self.img_analysis_liliang(self.jietuimg)
             if res is True:
                 # 执行吃饭
                 self.print('正在执行喝水操作')
-                pyautogui.press('7')
-                pyautogui.press('7') # 两次
+                pyautogui.press(els_config.heshui_key)
                 pass
             pass
             res = self.is_error()
@@ -656,7 +655,7 @@ class obj:
                     # 沒有中魚
                     if self.zhongyu_lock == 0:
                         break
-                    pyautogui.keyDown(els_config.keyboard_left)
+                    # pyautogui.keyDown(els_config.keyboard_left)
                     # 判斷是否已經準備好
                     paogan = 1
                     res = self.img_analysis_paogan(self.jietuimg)
@@ -664,7 +663,8 @@ class obj:
                         break
                     # pyautogui.press(els_config.keyboard_left)
                 time.sleep(1)
-                if paogan == 1:
+                res = self.img_analysis_paogan(self.jietuimg)
+                if paogan == 1 or self.zhongyu_lock == 1 or res is True:
                     # 加入窝子再放杆
                     if els_config.haigan_wozi_status == 1 and self.img_analysis_paogan(self.jietuimg) is True:
                         self.jianpanup()
@@ -680,6 +680,7 @@ class obj:
                             pyautogui.press('esc')
                     # 需要放杆
                     self.jianpanup()
+                    time.sleep(0.5)
                     pyautogui.keyDown(els_config.keyboard_left)
                     time.sleep(1)
                     pyautogui.keyDown(els_config.keyboard_shift)
@@ -690,6 +691,7 @@ class obj:
                     time.sleep(random.uniform(3, 4))
                     pyautogui.press(els_config.keyboard_left)
                     time.sleep(0.5)
+                    print('完成状态',paogan)
                 self.yugan_lock = 0
                 self.mocha_init(v) # 重置摩擦
                 pyautogui.press('0')
