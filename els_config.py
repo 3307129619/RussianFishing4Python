@@ -10,7 +10,6 @@ heshui_key = '5' # 喝水
 
 chifan_key = '4' # 吃饭
 
-
 laoao_start_m = 46 # 老奥开始时间
 laoao_end_m = 20 # 老奥结束时间
 
