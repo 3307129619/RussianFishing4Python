@@ -36,6 +36,8 @@ class obj:
     xy = None
     setting_type = 0 # 1.路亚。2.海竿、3.换图操作
     luya_paogan_num = 0 # 路亚抛竿
+    make_time = 0 # 制作时间
+    waer_lock = 0 # 挖饵锁
 
     run_jianpan = 0
     shift = 0
@@ -109,45 +111,44 @@ class obj:
             return False
         self.print('正在重置摩擦{}'.format(self.mocha_arr[i]))
         if self.mocha_arr[i] > 0:
-            if self.mocha_arr[i] == 9 and random.randint(1, 10) > 5:
-                self.mocha_arr[i] = 8 # 有概率缩小一下摩擦
+            # if self.mocha_arr[i] == 9 and random.randint(1, 10) > 5:
+            #     self.mocha_arr[i] = 8 # 有概率缩小一下摩擦
             # 需要减下来
             pyautogui.keyDown('alt')
             for v in range(self.mocha_arr[i]):
+                time.sleep(0.5)
                 pyautogui.press('-')
-                time.sleep(1)
             pyautogui.keyUp('alt')
         else:
             # 需要加上去
             pyautogui.keyDown('alt')
             for v in range(abs(self.mocha_arr[i])):
+                time.sleep(0.5)
                 pyautogui.press('+')
-                time.sleep(1)
-            pyautogui.keyUp('plus')
+            pyautogui.keyUp('alt')
             pass
         self.mocha_arr[i] = 0
         pass
 
     # 图片提取信息
     def img_analysis(self):
-        img_file = "../img_els_file/1647242994.2881403.jpg"
+        img_file = "../img_els_file/1650634929.0511131.jpg"
         # img_file = "../img_els_file/1645169699.jpg"
 
         img = Image.open(img_file)  # 打开图像
         # img = img_data
-        box = (529, 354, 592, 385)
+        box = (609, 713, 690, 745)
         roi = img.crop(box)
         data = numpy.asarray(roi)
-
         gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
         ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-        if 'error_img' not in self.__dict__.keys():
-            self.print('打开准备好图像')
-            img = Image.open('els_duibi_img/error_.jpg')  # 打开图像
-            self.error_img = numpy.asarray(img)
-        (score, diff) = compare_ssim(binary, self.error_img, full=True)
+        if 'btn_make_success' not in self.__dict__.keys():
+            self.print('打开制作图像')
+            img = Image.open('els_duibi_img/btn_make_success.jpg')  # 打开图像
+            self.btn_make_success = numpy.asarray(img)
+        (score, diff) = compare_ssim(binary, self.btn_make_success, full=True)
         if score >= 0.8:
-            # print('准备好抛竿',score)
+            print('制作完成',score)
             return True
         image = Image.fromarray(data)
         # image.save('els_duibi_img/space.jpg','JPEG')
@@ -417,6 +418,8 @@ class obj:
                 continue
             if self.jietuimg is None:
                 continue
+            if self.waer_lock == 1: # 在挖饵，不能操作
+                continue
             v = self.jietuimg_v
             time_sleep = random.randint(20, 40)
             self.obj_arr['ext_time'] = int(time.time())+time_sleep
@@ -453,6 +456,308 @@ class obj:
         pass
 
     """
+        执行删除鱼
+    """
+    def run_delete_all(self):
+        self.print('删除所有鱼')
+        while True:
+            time.sleep(1)
+            if self.is_shouye():
+                break
+            pyautogui.press('space')
+            time.sleep(0.5)
+            pyautogui.press('esc')
+        pyautogui.press('c')
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[2] - 100, self.xy[3] - 80))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[2] - 400, self.xy[3] - 80))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[2] - 180, self.xy[3] - 80))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[0]+600, self.xy[3] - 350))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        while True:
+            time.sleep(1)
+            if self.is_shouye():
+                break
+            pyautogui.press('space')
+            time.sleep(0.5)
+            pyautogui.press('esc')
+        pass
+
+    """
+        执行制作鱼饵-鱼肉
+    """
+    def run_make_yuer_yurou(self):
+        self.print('制作鱼饵')
+        while True:
+            time.sleep(1)
+            if self.is_shouye():
+                break
+            pyautogui.press('space')
+            time.sleep(0.5)
+            pyautogui.press('esc')
+        pyautogui.press('n')
+        time.sleep(0.5)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        time.sleep(0.5)
+        # 制作鱼肉
+        win32api.SetCursorPos((self.xy[0]+550, self.xy[3]-50))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        # 设置肉刀
+        win32api.SetCursorPos((self.xy[0]+750, self.xy[1]+400))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[0]+150, self.xy[1]+400))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[0]+600, self.xy[3]-80))
+        time.sleep(0.5)
+        pyautogui.click()
+        while True:
+            # 选择肉
+            time.sleep(0.5)
+            win32api.SetCursorPos((self.xy[0]+750, self.xy[1]+580))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            if self.is_yuhu():
+                self.print('结束制作')
+                # 结束
+                while True:
+                    time.sleep(1)
+                    if self.is_shouye():
+                        break
+                    pyautogui.press('space')
+                    time.sleep(0.5)
+                    pyautogui.press('esc')
+                break
+            win32api.SetCursorPos((self.xy[0] + 150, self.xy[1] + 200))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            win32api.SetCursorPos((self.xy[0] + 600, self.xy[3] - 80))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            win32api.SetCursorPos((self.xy[0]+550, self.xy[1]+720))
+            time.sleep(0.5)
+            pyautogui.click()
+            while True:
+                time.sleep(1)
+                if self.is_make(): # 在制作页面
+                    time.sleep(0.5)
+                    break
+                if self.is_error(): # 有错误
+                    self.print('正在执行错误提示框操作')
+                    time.sleep(1)
+                    win32api.SetCursorPos((self.xy[0] + 700, self.xy[1] + 450))
+                    time.sleep(1)
+                    pyautogui.click()
+                if self.is_make_success(): # 制作完成
+                    pyautogui.click()
+                    time.sleep(0.5)
+                    break
+        pass
+
+    """
+            执行制作鱼饵-青蛙
+        """
+    def run_make_yuer_qingwa(self):
+        self.print('制作青蛙')
+        while True:
+            time.sleep(1)
+            if self.is_shouye():
+                break
+            pyautogui.press('space')
+            time.sleep(0.5)
+            pyautogui.press('esc')
+        pyautogui.press('n')
+        time.sleep(0.5)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        time.sleep(0.5)
+        # 制作青蛙
+        win32api.SetCursorPos((self.xy[0] + 550, self.xy[3] - 50))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        while True:
+            # 选择肉
+            time.sleep(0.5)
+            win32api.SetCursorPos((self.xy[0] + 750, self.xy[1] + 400))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            if self.is_yuhu():
+                self.print('结束制作')
+                # 结束
+                while True:
+                    time.sleep(1)
+                    if self.is_shouye():
+                        break
+                    pyautogui.press('space')
+                    time.sleep(0.5)
+                    pyautogui.press('esc')
+                break
+            win32api.SetCursorPos((self.xy[0] + 150, self.xy[1] + 200))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            win32api.SetCursorPos((self.xy[0] + 600, self.xy[3] - 80))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            win32api.SetCursorPos((self.xy[0] + 550, self.xy[1] + 720))
+            time.sleep(0.5)
+            pyautogui.click()
+            while True:
+                time.sleep(1)
+                if self.is_make():  # 在制作页面
+                    time.sleep(0.5)
+                    break
+                if self.is_error():  # 有错误
+                    self.print('正在执行错误提示框操作')
+                    time.sleep(1)
+                    win32api.SetCursorPos((self.xy[0] + 700, self.xy[1] + 450))
+                    time.sleep(1)
+                    pyautogui.click()
+                if self.is_make_success():  # 制作完成
+                    pyautogui.click()
+                    time.sleep(0.5)
+                    break
+        pass
+
+    """
+        执行制作鱼饵-饵鱼
+    """
+    def run_make_yuer_eryu(self):
+        self.print('制作饵鱼')
+        while True:
+            time.sleep(1)
+            if self.is_shouye():
+                break
+            pyautogui.press('space')
+            time.sleep(0.5)
+            pyautogui.press('esc')
+        pyautogui.press('n')
+        time.sleep(0.5)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        time.sleep(0.5)
+        # 制作
+        win32api.SetCursorPos((self.xy[0] + 550, self.xy[3] - 50))
+        time.sleep(0.5)
+        pyautogui.click()
+        time.sleep(0.5)
+        win32api.SetCursorPos((self.xy[0] + 750, self.xy[3] - 50))
+        time.sleep(0.5)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -42)
+        time.sleep(0.5)
+        y_num = 0
+        x_num = 0
+        for v in range(0, 15):
+            if v % 5 == 0 and v != 0:
+                y_num += 1
+                x_num = 0
+            x = self.xy[0] + 700 + (x_num*100)
+            y = self.xy[1] + 180 + (y_num*80)
+            x_num += 1
+            if len(els_config.make_eryu_id) >= v:
+                if els_config.make_eryu_id[v][0] == 0:
+                    continue
+            win32api.SetCursorPos((x, y))
+            time.sleep(0.5)
+            pyautogui.click()
+            time.sleep(0.5)
+            while True:
+                # 选择肉
+                time.sleep(0.5)
+                win32api.SetCursorPos((self.xy[0] + 750, self.xy[3] - 50))
+                time.sleep(0.5)
+                pyautogui.click()
+                time.sleep(0.5)
+                if self.is_yuhu():
+                    self.print('结束制作')
+                    # 结束
+                    pyautogui.press('esc')
+                    time.sleep(0.5)
+                    break
+                win32api.SetCursorPos((self.xy[0] + 150, self.xy[1] + 200))
+                time.sleep(0.5)
+                pyautogui.click()
+                time.sleep(0.5)
+                win32api.SetCursorPos((self.xy[0] + 600, self.xy[3] - 80))
+                time.sleep(0.5)
+                pyautogui.click()
+                time.sleep(0.5)
+                win32api.SetCursorPos((self.xy[0] + 550, self.xy[1] + 720))
+                time.sleep(0.5)
+                pyautogui.click()
+                while True:
+                    time.sleep(1)
+                    if self.is_make():  # 在制作页面
+                        time.sleep(0.5)
+                        break
+                    if self.is_error():  # 有错误
+                        self.print('正在执行错误提示框操作')
+                        time.sleep(1)
+                        win32api.SetCursorPos((self.xy[0] + 700, self.xy[1] + 450))
+                        time.sleep(1)
+                        pyautogui.click()
+                    if self.is_make_success():  # 制作完成
+                        pyautogui.click()
+                        time.sleep(0.5)
+                        break
+        time.sleep(0.5)
+        while True:
+            time.sleep(1)
+            if self.is_shouye():
+                break
+            pyautogui.press('space')
+            time.sleep(0.5)
+            pyautogui.press('esc')
+        pass
+
+    """
         执行放杆收杆操作，路亚
     """
     def run_fanggan(self):
@@ -460,6 +765,7 @@ class obj:
         v = self.jietuimg_v
         i = 0
         i_right = 0
+        start_i = 0
 
         while True:
             # 判断版本是否被操作过，如果操作过，则不能执行
@@ -479,10 +785,20 @@ class obj:
                     # 去老奥
                     continue
             self.lock.acquire()
-            pyautogui.press('1')
+            pyautogui.press(els_config.luya_key)
             self.run_status = 1
             time.sleep(0.3)
             res = self.img_analysis_weizhunbei(self.jietuimg)
+            if start_i == 0 and els_config.luya_zhuangshu_num != 0:
+                if els_config.luya_zhuangshu_num > 50:
+                    els_config.luya_zhuangshu_num = 50
+                self.print('设置转速')
+                start_i = 1
+                pyautogui.keyDown('r')
+                for v in range(els_config.luya_zhuangshu_num):
+                    pyautogui.press('+')
+                    time.sleep(0.2)
+                self.print('设置转速完成')
             if res is True:
                 # 需要换饵
                 self.jianpanup()
@@ -539,9 +855,10 @@ class obj:
                 #     except BaseException as e:
                 #         print("错误信息：",e)
                 #     continue
-                self.mocha_init('1') # 重置摩擦
+                self.mocha_init(els_config.luya_key) # 重置摩擦
                 self.run_jianpan = 0
                 self.jianpanup()
+                self.run_make()
                 self.print('正在进行抛竿动作')
                 if self.jianpan_s == 1:
                     # 需要先弹起
@@ -556,11 +873,12 @@ class obj:
                 self.xiegang = 0
 
                 pyautogui.keyDown(els_config.keyboard_shift)
+                time.sleep(0.2)
                 pyautogui.keyDown(els_config.keyboard_left)
                 time.sleep(0.5)
                 pyautogui.keyUp(els_config.keyboard_left)
                 pyautogui.keyUp(els_config.keyboard_shift)
-                time.sleep(random.uniform(2, 3))
+                time.sleep(random.uniform(3, 4))
                 pyautogui.keyDown(els_config.keyboard_left)
                 # time.sleep(0.3)
                 # pyautogui.keyUp(els_config.keyboard_left)
@@ -570,6 +888,11 @@ class obj:
                 self.yugan_lock = 1
                 self.run_status = 0
                 i_right = 0
+                # 打状态
+                if els_config.luya_zhuangtai_status == 1:
+                    time.sleep(random.randint(5, 7) / 10)
+                    pyautogui.keyUp(els_config.keyboard_left)
+                    time.sleep(random.randint(5, 6) / 10)
 
                 try:
                     self.lock.release()
@@ -578,7 +901,7 @@ class obj:
                     # print("错误信息：", e)
                 continue
                 pass
-            elif self.luya_paogan_num > 6 and self.is_fanggan(): # 在首页
+            elif self.luya_paogan_num > 6 and self.is_shouye(): # 在首页
                 self.yugan_lock = 1
                 i_right += 1
                 pyautogui.keyDown(els_config.keyboard_left)
@@ -590,6 +913,19 @@ class obj:
                 if i_right >= 120: # 强制提竿
                     i_right = 0
                     pyautogui.keyDown(els_config.keyboard_right)
+
+            # 路亚状态
+            if els_config.luya_zhuangtai_status == 1 and self.zhongyu_lock == 0:
+                pyautogui.keyDown(els_config.keyboard_left)
+                time.sleep(random.randint(4, 7) / 10)
+                pyautogui.keyUp(els_config.keyboard_left)
+                time.sleep(random.randint(4, 6) / 10)
+                # time.sleep(0.5)
+
+            # 当中鱼时需要强制收杆
+            if self.zhongyu_lock == 1 and self.yugan_lock == 1:
+                pyautogui.keyDown(els_config.keyboard_left)
+
             try:
                 self.lock.release()
             except BaseException as e:
@@ -615,6 +951,7 @@ class obj:
         print('啓動海竿進程')
         arr = els_config.haigan_key
         v = self.jietuimg_v
+        obj_arr = {}
         while True:
             if v == self.jietuimg_v:
                 continue
@@ -630,11 +967,15 @@ class obj:
                 if tm_min >= els_config.baihe_start_m and tm_min < els_config.laoao_start_m:
                     # 去白河
                     continue
+
             v = self.jietuimg_v
             time.sleep(0.3)
             self.run_status = 1
             self.lock.acquire()
+            self.run_make()
             for v in arr:
+                if v not in obj_arr.keys():
+                    obj_arr[v] = 0
                 if self.map_status != 2:
                     continue
                 self.print('操作{}杆子'.format(v))
@@ -651,17 +992,45 @@ class obj:
                 pyautogui.press(els_config.keyboard_left)
                 time.sleep(10)
                 paogan = 0
+                obj_arr[v] += 1
                 while True:
                     # 沒有中魚
                     if self.zhongyu_lock == 0:
                         break
+                    else:
+                        obj_arr[v] = 0 # 中鱼重置
                     # pyautogui.keyDown(els_config.keyboard_left)
                     # 判斷是否已經準備好
                     paogan = 1
                     res = self.img_analysis_paogan(self.jietuimg)
                     if res is True:
+                        obj_arr[v] = 0  # 中鱼重置
                         break
                     # pyautogui.press(els_config.keyboard_left)
+                if obj_arr[v] >= els_config.haigan_reset_paogan:
+                    self.print('强制提竿，重新抛竿')
+                    obj_arr[v] = 0
+                    pyautogui.keyDown(els_config.keyboard_left)
+                    temp_i = 0
+                    if int(v) not in self.mocha_arr.keys():
+                        self.mocha_arr[int(v)] = 0
+                    while True:
+                        temp_i += 1
+                        time.sleep(1)
+                        res = self.img_analysis_paogan(self.jietuimg)
+                        if res is True:
+                            break
+                        # 增加摩擦
+                        if temp_i >= 10 and self.mocha_arr[int(v)] <= 9 and self.is_shouye() is True:
+                            self.mocha_arr[int(v)] += 1
+                            pyautogui.keyDown('alt')
+                            time.sleep(0.5)
+                            pyautogui.press('+')
+                            pyautogui.keyUp('alt')
+                        if temp_i >= 100:
+                            break
+                    pyautogui.keyUp(els_config.keyboard_left)
+                    time.sleep(1)
                 time.sleep(1)
                 res = self.img_analysis_paogan(self.jietuimg)
                 if paogan == 1 or self.zhongyu_lock == 1 or res is True:
@@ -691,7 +1060,6 @@ class obj:
                     time.sleep(random.uniform(3, 4))
                     pyautogui.press(els_config.keyboard_left)
                     time.sleep(0.5)
-                    print('完成状态',paogan)
                 self.yugan_lock = 0
                 self.mocha_init(v) # 重置摩擦
                 pyautogui.press('0')
@@ -713,7 +1081,81 @@ class obj:
             time.sleep(time_sleep_ttl)
             pyautogui.keyUp('a')
             self.run_status = 0
-            time_s = random.randint(20, 40)
+            time_s = random.randint(els_config.haigan_stop_time[0], els_config.haigan_stop_time[1])
+            self.print("等待{}秒".format(time_s))
+            time.sleep(time_s)
+        pass
+
+    """
+            手竿 
+            TODO 使用秒提手法
+        """
+    def run_shougan(self):
+        print('启动手竿进程')
+        arr = els_config.haigan_key
+        v = self.jietuimg_v
+        while True:
+            if v == self.jietuimg_v:
+                continue
+            if self.jietuimg is None:
+                continue
+            if self.run_status != 0:
+                continue
+            v = self.jietuimg_v
+            time.sleep(0.3)
+            self.run_status = 1
+            self.lock.acquire()
+            self.run_make()
+            for v in arr:
+                self.print('操作{}杆子'.format(v))
+                self.zhongyu_lock = 0  # 重置数据
+                self.ganzi_key = int(v)
+                pyautogui.press(els_config.keyboard_left)
+                time.sleep(0.5)
+                # 提起
+                pyautogui.press(v)
+                time.sleep(1)
+                self.yugan_lock = 1
+                res = self.img_analysis_paogan(self.jietuimg)
+                if res is False:
+                    pyautogui.keyDown(els_config.keyboard_left)
+                    temp_i = 0
+                    while True:
+                        time.sleep(1)
+                        temp_i += 1
+                        res = self.img_analysis_paogan(self.jietuimg)
+                        if res is True:
+                            break
+                        # 打开空格
+                        if temp_i % 5 == 0:
+                            pyautogui.press('space')
+                        if temp_i >= 100: # 直接退出
+                            break
+                    pyautogui.keyUp(els_config.keyboard_left)
+                time.sleep(1)
+                # 进行抛竿
+                pyautogui.keyDown(els_config.keyboard_left)
+                time.sleep(0.6)
+                pyautogui.keyDown(els_config.keyboard_shift)
+                time.sleep(0.6)
+                pyautogui.keyUp(els_config.keyboard_left)
+                time.sleep(0.3)
+                pyautogui.keyUp(els_config.keyboard_shift)
+                time.sleep(1)
+                pyautogui.press(els_config.keyboard_left)
+                pyautogui.press('0')
+            try:
+                self.lock.release()
+            except BaseException as e:
+                pass
+            time.sleep(1)
+            self.print('往左边走')
+            pyautogui.keyDown('a')
+            time_sleep_ttl = (len(els_config.haigan_key) - 1) * 0.2  # 3根的量
+            time.sleep(time_sleep_ttl)
+            pyautogui.keyUp('a')
+            self.run_status = 0
+            time_s = random.randint(10, 20)
             self.print("等待{}秒".format(time_s))
             time.sleep(time_s)
         pass
@@ -800,24 +1242,22 @@ class obj:
                     except BaseException as e:
                         pass
                     zhongyu_num += 1
-                    if zhongyu_num >= 15 and zhongyu_num % 2 == 0:
+                    if (zhongyu_num >= 15 and zhongyu_num % 2 == 0) or res['h'] > 4350:
                         if self.ganzi_key not in self.mocha_arr.keys():
                             self.mocha_arr[self.ganzi_key] = 0
                         # 可以進入增加或減少摩擦操作
                         if res['h'] > 4350:
                             self.mocha_arr[self.ganzi_key] -= 1
                             pyautogui.keyDown('alt')
-                            pyautogui.keyDown('-')
                             time.sleep(0.5)
-                            pyautogui.keyUp('-')
+                            pyautogui.press('-')
                             pyautogui.keyUp('alt')
                         else:
-                            if self.mocha_arr[self.ganzi_key] < 9 and res['q'] > 1300:
+                            if self.mocha_arr[self.ganzi_key] <= 9 and res['q'] > 0 and self.is_shouye() is True:
                                 self.mocha_arr[self.ganzi_key] += 1
                                 pyautogui.keyDown('alt')
-                                pyautogui.keyDown('+')
                                 time.sleep(0.5)
-                                pyautogui.keyUp('+')
+                                pyautogui.press('+')
                                 pyautogui.keyUp('alt')
                     if zhongyu_num >= 60 and (zhongyu_num % 8 == 3 or zhongyu_num % 8 == 0) and zhongyu_num % 20 <= 3:
                         # 打开空格
@@ -881,7 +1321,7 @@ class obj:
         if score < 0.8:
             self.print('不在首页')
             return False
-        self.print('在首页')
+        #self.print('在首页')
         return True
 
     """
@@ -930,23 +1370,91 @@ class obj:
         return True
 
     """
-        判断错误
+        判断是否为错误弹窗
     """
     def is_error(self):
         if self.jietuimg is None:
             return False
         img = self.jietuimg
-        box = (529, 354, 592, 385)
+        box = (689, 444, 752, 465)
+
+        # box = (529, 354, 592, 385)
         roi = img.crop(box)
         data = numpy.asarray(roi)
         gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
         ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-        if 'error_img' not in self.__dict__.keys():
+        if 'error_btn_success' not in self.__dict__.keys():
             self.print('打开错误图像')
-            img = Image.open('els_duibi_img/error_.jpg')  # 打开图像
-            self.error_img = numpy.asarray(img)
-        (score, diff) = compare_ssim(binary, self.error_img, full=True)
+            img = Image.open('els_duibi_img/error_btn_success.jpg')  # 打开图像
+            self.error_btn_success = numpy.asarray(img)
+        (score, diff) = compare_ssim(binary, self.error_btn_success, full=True)
         if score >= 0.8:
+            return True
+        return False
+
+    """
+        判断鱼护是否为空
+    """
+    def is_yuhu(self):
+        if self.jietuimg is None:
+            return False
+        img = self.jietuimg
+        box = (589, 424, 702, 475)
+        roi = img.crop(box)
+        data = numpy.asarray(roi)
+        gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
+        ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        if 'yuhu' not in self.__dict__.keys():
+            self.print('打开鱼护图像')
+            img = Image.open('els_duibi_img/yuhu.jpg')  # 打开图像
+            self.yuhu = numpy.asarray(img)
+        (score, diff) = compare_ssim(binary, self.yuhu, full=True)
+        if score >= 0.8:
+            print('鱼护没鱼了', score)
+            return True
+        return False
+
+    """
+        是否在制作页面
+    """
+    def is_make(self):
+        if self.jietuimg is None:
+            return False
+        img = self.jietuimg
+        box = (489, 703, 590, 735)
+        roi = img.crop(box)
+        data = numpy.asarray(roi)
+        gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
+        ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        if 'make' not in self.__dict__.keys():
+            self.print('打开制作图像')
+            img = Image.open('els_duibi_img/make.jpg')  # 打开图像
+            self.make = numpy.asarray(img)
+        (score, diff) = compare_ssim(binary, self.make, full=True)
+        if score >= 0.8:
+            print('制作', score)
+            return True
+        return False
+
+    """
+        制作完成
+    """
+    def is_make_success(self):
+        if self.jietuimg is None:
+            return False
+        img = self.jietuimg
+        box = (609, 713, 690, 745)
+        roi = img.crop(box)
+        data = numpy.asarray(roi)
+        gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
+        ret, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+        if 'btn_make_success' not in self.__dict__.keys():
+            self.print('打开制作图像')
+            img = Image.open('els_duibi_img/btn_make_success.jpg')  # 打开图像
+            self.btn_make_success = numpy.asarray(img)
+        (score, diff) = compare_ssim(binary, self.btn_make_success, full=True)
+        if score >= 0.8:
+            print('制作完成', score)
             return True
         return False
 
@@ -966,9 +1474,9 @@ class obj:
             if self.run_status != 0:
                 continue
             time.sleep(1)
+            self.run_status = 1
             # self.print('能否换图')
             self.lock.acquire()
-            self.run_status = 1
             tm_min = time.localtime().tm_min
             if (tm_min >= els_config.laoao_start_m or tm_min < els_config.laoao_end_m) and self.map_status == 1:
             # if True and self.map_status == 1:
@@ -992,11 +1500,11 @@ class obj:
                 time.sleep(1)
                 pyautogui.click()
                 time.sleep(1)
-                win32api.SetCursorPos((self.xy[0] + 330, self.xy[1] + 700))
+                win32api.SetCursorPos((self.xy[0] + 930, self.xy[1] + 700))
                 time.sleep(1)
                 pyautogui.click()
                 time.sleep(1)
-                win32api.SetCursorPos((self.xy[0] + 880, self.xy[1] + 520))
+                win32api.SetCursorPos((self.xy[0] + 100, self.xy[1] + 520))
                 time.sleep(1)
                 pyautogui.click()
                 self.jianpanup()
@@ -1035,7 +1543,7 @@ class obj:
                 time.sleep(1)
                 pyautogui.click()
                 time.sleep(1)
-                win32api.SetCursorPos((self.xy[0] + 880, self.xy[1] + 520))
+                win32api.SetCursorPos((self.xy[0] + 100, self.xy[1] + 520))
                 time.sleep(1)
                 pyautogui.click()
                 self.jianpanup()
@@ -1067,6 +1575,79 @@ class obj:
         pass
 
     """
+        执行鱼肉操作
+    """
+    def run_make(self):
+        if els_config.make_status == 0:
+            return False
+        self.print('判断能否制作')
+        if self.make_time == 0:
+            self.make_time = int(time.time())
+        if int(time.time()) - self.make_time < 60*60:
+            self.print('还没到时间，每一小时制作一次 剩余{}秒'.format(60*60 - (int(time.time()) - self.make_time)))
+            return False
+        # 否则，制作，重新赋值
+        if els_config.make_yurou == 1:
+            self.run_make_yuer_yurou()
+        if els_config.make_eryu == 1:
+            self.run_make_yuer_eryu()
+        if els_config.make_qingwa == 1:
+            self.run_make_yuer_qingwa()
+        if els_config.delete_yu_all == 1:
+            self.run_delete_all()
+        self.make_time = int(time.time())
+
+    """
+        挖饵
+    """
+    def waer(self):
+        self.waer_lock = 1
+        while True:
+            if self.jietuimg is None:
+                continue
+            if self.img_analysis_heshui(self.jietuimg) is False: # 不需要喝水时进行操作
+                self.print('执行挖饵')
+                pyautogui.press(els_config.keyboard_left)
+                time.sleep(5)
+                pyautogui.press('space')
+                time.sleep(2)
+            pyautogui.press(els_config.heshui_key)
+            if els_config.waer_chanzi_zouwei == 1:
+                arr = ['a', 'w', 's', 'd']
+                key = random.choice(arr)
+                pyautogui.keyDown(key)
+                time.sleep(random.randint(2, 5))
+                pyautogui.keyUp(key)
+            if els_config.waer_changshangbing_zouwei == 1:
+                arr = ['a', 'd']
+                key = random.choice(arr)
+                pyautogui.keyDown('s')
+                time.sleep(2)
+                pyautogui.keyUp('s')
+                time.sleep(1)
+                pyautogui.keyDown(key)
+                time.sleep(random.randint(2, 5))
+                pyautogui.keyUp(key)
+                time.sleep(1)
+                pyautogui.keyDown('w')
+                time.sleep(3)
+                pyautogui.keyUp('w')
+            time_ttl = random.randint(15, 35)
+            self.print('等待{}秒'.format(time_ttl))
+            time.sleep(time_ttl)
+        pass
+
+
+
+    """"
+        测试
+    """
+    def run_test(self):
+        self.waer()
+        # while True:
+        pass
+
+    """
         执行命令
     """
     def run(self):
@@ -1077,7 +1658,10 @@ class obj:
         # run_shubiao = Thread(target=self.jiantingshubiao)
         # run_jianpan.start()
         # run_shubiao.start()
+        #run_test = Thread(target=self.run_test)
+        #run_test.start()
         # """
+
         run_other = Thread(target=self.run_other) # 吃饭喝水
         run_zhongyu = Thread(target=self.run_zhongyu) # 中鱼动作
         run_shouyu = Thread(target=self.run_shouyu) # 收鱼动作
@@ -1085,7 +1669,7 @@ class obj:
         run_zhongyu.start()
         run_shouyu.start()
 
-        type = input("路线：1.路亚，2.海竿，3.换图操作:")
+        type = input("路线：1.路亚，2.海竿，3.换图操作，，4.手竿，5.挖饵:")
         if str(type) == '1':
             zouwei = input("是否走位，1.是，2，不是：")
             if str(zouwei) == '1':
@@ -1110,11 +1694,21 @@ class obj:
             run_haigan = Thread(target=self.run_haigan)  # 海竿r
             run_haigan.start()
             self.map_status = 1
+        if str(type) == '4':
+            run_shougan = Thread(target=self.run_shougan)  # 手竿
+            run_shougan.start()
+            self.map_status = 1
+        if str(type) == '5':
+            self.setting_type = 4
+            waer = Thread(target=self.waer)  # 挖饵
+            waer.start()
+            self.map_status = 1
 # """
         self.jianpanup() # 弹起所有键
         (x1, y1, x2, y2), handle = self.get_window_pos('Russian Fishing 4')
         win32gui.SetForegroundWindow(handle)
         self.xy = (x1, y1, x2, y2)
+
         arr = [
             'dianwei_7348', 'dianwei_7263'
         ]
